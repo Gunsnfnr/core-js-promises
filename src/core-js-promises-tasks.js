@@ -36,13 +36,24 @@ function getPromise(number) {
  * Promise.resolve('success') => promise that will be fulfilled with 'success' value
  * Promise.reject('fail')     => promise that will be fulfilled with 'fail' value
  */
-function getPromiseResult(/* source */) {
-  throw new Error('Not implemented');
+function getPromiseResult(source) {
+  const resultPromise = new Promise((resolve) => {
+    source
+      .then(() => {
+        resolve('success');
+      })
+      .catch(() => {
+        resolve('fail');
+      });
+  });
+
+  return resultPromise;
 }
 
 /**
  * Takes an array of promises and returns a promise that resolves with the value of the first successfully resolved promise From the given array.
  * If all promises in the array are rejected, it returns a promise that is rejected.
+ *
  *
  * @param {Array<Promise<number>>} promises
  * @return {Promise<number>}
@@ -77,8 +88,9 @@ function getFirstResolvedPromiseResult(promises) {
  * [promise3, promise6, promise2] => Promise rejected with 2
  * [promise3, promise4, promise6] => Promise rejected with 6
  */
-function getFirstPromiseResult(/* promises */) {
-  throw new Error('Not implemented');
+function getFirstPromiseResult(promises) {
+  const result = Promise.any(promises);
+  return result;
 }
 
 /**
