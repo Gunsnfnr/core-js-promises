@@ -121,9 +121,26 @@ function getAllOrNothing(promises) {
  * [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)] => Promise fulfilled with [1, 2, 3]
  * [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)]  => Promise fulfilled with [1, null, 3]
  */
-function getAllResult(/* promises */) {
-  throw new Error('Not implemented');
+
+function getAllResult(promises) {
+  const result = [];
+  const allResults = Promise.allSettled(promises).then((value) => {
+    value.forEach((val) => {
+      const currentVal = val.value || null;
+      result.push(currentVal);
+    });
+    return result;
+  });
+  return allResults;
 }
+
+// .then((values) => {
+//   return values;
+// });
+
+// console.log('values: ', values);
+// console.log('JSON.parse(values): ', JSON.parse(values));
+// return JSON.parse(values);
 
 /**
  * Takes an array of promises and processes them sequentially, concatenating each resolved value into a single string.
@@ -143,8 +160,20 @@ function getAllResult(/* promises */) {
  * [promise1, promise4, promise3] => Promise.resolved('104030')
  * [promise1, promise4, promise3, promise2] => Promise.resolved('10403020')
  */
-function queuPromises(/* promises */) {
-  throw new Error('Not implemented');
+
+function queuPromises(promises) {
+  const resultingPromise = new Promise(function handlePromises(resolve) {
+    const sum = [];
+    let total = 0;
+    promises.forEach((item, index) => {
+      Promise.resolve(item).then((result) => {
+        sum[index] = result;
+        total += 1;
+        if (total === promises.length) resolve(sum.join(''));
+      });
+    });
+  });
+  return resultingPromise;
 }
 
 module.exports = {
